@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Infected - CrabeC2</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.min.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pastafarianism" style="font-size: 37px;"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>CrabeC2</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="init"><i class="fas fa-user"></i><span>1st Stage</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="machines"><i class="fas fa-user"></i><span>Infected Machines</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="payload"><i class="fas fa-table"></i><span>Payload</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="task-event"><i class="fas fa-window-maximize"></i><span>Task &amp; Event</span></a>
+                    <li class="nav-item"><a class="nav-link" href="docs"><i class="fas fa-user-circle"></i><span>Documentation</span></a></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            
+                        </form>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Infected Machines</h3>
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 fw-bold">Machines Info</p>
+                            </div>
+                        <div class="card-body">
+                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                <table class="table my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Machine Name</th>
+                                            <th>IP</th>
+                                            <th>MAC</th>
+                                            <th>User</th>
+                                            <th>Last active</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each machines}}
+                                            <tr>
+                                                <td>{{id}}</td>
+                                                <td>{{machine_name}}</td>
+                                                <td>{{ip}}</td>
+                                                <td>{{mac}}</td>
+                                                <td>{{users}}</td>
+                                                <td>{{last_active}}</td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm" onClick="fetchMachineById('{{id}}')">View</button>
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr></tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © CrabeC2 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <div class="modal fade" id="viewMachineModal" tabindex="-1" aria-labelledby="viewMachineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewMachineModalLabel">Machine information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="machineName" class="mb-2"></div>
+                <div id="IP" class="mb-2"></div>
+                <div id="MAC" class="mb-2"></div>
+                <div id="users" class="mb-2"></div>
+                <div id="OS" class="mb-2"></div>
+                <div id="OS_Version" class="mb-2"></div>
+                <div id="First_active" class="mb-2"></div>
+                <div id="Last_active" class="mb-2"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/script.min.js"></script>
+        <script type="text/javascript">
+        function fetchMachineById(machineID) {
+          fetch(`/api/machine/${machineID}`)
+            .then(response => response.json())
+            .then(data => {
+                const MachineName = data.machine_name || 'No Name';
+                const IP = data.ip || 'No IP';
+                const MAC = data.mac || 'No MAC';
+                const users = data.users || 'No Users'
+                const OS = data.os || 'No OS';
+                const OS_Version = data.os_version || 'No OS version';
+                const First_active = data.first_active || 'No first active information';
+                const Last_active = data.last_active || 'No last active information';
+
+                document.getElementById('machineName').innerHTML = `<strong>Machine Name:</strong> <br>${MachineName}`;
+                document.getElementById('IP').innerHTML = `<strong>IP address:</strong> <br>${IP}`;
+                document.getElementById('MAC').innerHTML = `<strong>MAC address:</strong> <br>${MAC}`;
+                document.getElementById('users').innerHTML = `<strong>MAC address:</strong> <br>${users}`;
+                document.getElementById('OS').innerHTML = `<strong>OS:</strong> <br>${OS}`;
+                document.getElementById('OS_Version').innerHTML = `<strong>OS Version:</strong> <br>${OS_Version}`;
+                document.getElementById('First_active').innerHTML = `<strong>First active:</strong> <br>${First_active}`;
+                document.getElementById('Last_active').innerHTML = `<strong>Last_active:</strong> <br>${Last_active}`;
+        
+                new bootstrap.Modal(document.getElementById('viewMachineModal')).show();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+    </script>
+</body>
+
+</html>

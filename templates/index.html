@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - CrabeC2</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.min.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pastafarianism" style="font-size: 37px;"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>CrabeC2</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="init"><i class="fas fa-user"></i><span>1st Stage</span></a></li>
+<li class="nav-item"><a class="nav-link" href="machines"><i class="fas fa-user"></i><span>Infected Machines</span></a></li>
+    <li class="nav-item"><a class="nav-link" href="payload"><i class="fas fa-table"></i><span>Payload</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="task-event"><i class="fas fa-window-maximize"></i><span>Task &amp; Event</span></a>
+                    <li class="nav-item"><a class="nav-link" href="docs"><i class="fas fa-user-circle"></i><span>Documentation</span></a></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        </form>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-primary py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Machine owned&nbsp;</span></div>
+                                            <div class="text-dark fw-bold h5 mb-0"><span>{{ machine_owned }}</span></div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-desktop fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-success py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Payload count</span></div>
+                                            <div class="text-dark fw-bold h5 mb-0"><span>{{ payload_number }}</span></div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-rocket fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-info py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>Events count</span></div>
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="text-dark fw-bold h5 mb-0 me-3"><span>{{ events }}</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-bell fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-warning py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>Reverse shell</span></div>
+                                            <div class="text-dark fw-bold h5 mb-0"><span>{{ reverse_shell }}</span></div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-tasks fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        <div class="col-lg-5 col-xl-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">OS repartition</h6>
+                                    <div class="dropdown no-arrow">
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="osDistributionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © CrabeC2 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="/assets/js/script.min.js"></script>
+    <script src="/assets/js/chart.min.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://127.0.0.1:3000/api/sumos')
+                .then(response => response.json())
+                .then(data => {
+                    const osNames = data.map(item => item[0]);
+                    const osCounts = data.map(item => item[1]);
+                    const backgroundColors = [];
+                    const borderColors = [];
+        
+                    osNames.forEach(osName => {
+                        if (osName.toLowerCase().includes("windows")) {
+                            backgroundColors.push('rgba(54, 162, 235, 0.8)');
+                            borderColors.push('rgba(54, 162, 235, 1)');
+                        } else if (osName.toLowerCase().includes("linux")) {
+                            backgroundColors.push('rgba(255, 206, 86, 0.8)');
+                            borderColors.push('rgba(255, 206, 86, 1)');
+                        } else if (osName.toLowerCase().includes("macos")) {
+                            backgroundColors.push('rgba(255, 99, 132, 0.8)');
+                            borderColors.push('rgba(255, 99, 132, 1)');
+                        } else {
+                            backgroundColors.push('rgba(153, 102, 255, 0.8)');
+                            borderColors.push('rgba(153, 102, 255, 1)');
+                        }
+                    });
+        
+                    const ctx = document.getElementById('osDistributionChart').getContext('2d');
+                    const osDistributionChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: osNames,
+                            datasets: [{
+                                label: 'OS Repartition',
+                                data: osCounts,
+                                backgroundColor: backgroundColors,
+                                borderColor: borderColors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'OS Repartition'
+                                }
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
+
+
+</body>
+
+</html>

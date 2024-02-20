@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Payloads - CrabeC2</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.min.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pastafarianism" style="font-size: 37px;"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>CrabeC2</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="init"><i class="fas fa-user"></i><span>1st Stage</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="machines"><i class="fas fa-user"></i><span>Infected Machines</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="payload"><i class="fas fa-table"></i><span>Payload</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="task-event"><i class="fas fa-window-maximize"></i><span>Task &amp; Event</span></a>
+                    <li class="nav-item"><a class="nav-link" href="docs"><i class="fas fa-user-circle"></i><span>Documentation</span></a></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        </form>
+                        
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Payload</h3>
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 fw-bold">Payload Info</p>
+                            <button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#addPayloadModal">Add New Payload</button>
+                            <button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#addPayloadFile">Upload File</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                <table class="table my-0" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Payload Name</th>
+                                            <th>Payload Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each payloads}}
+                                            <tr>
+                                                <td>{{payload_id}}</td>
+                                                <td>{{payload_name}}</td>
+                                                <td>{{payload_type}}</td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm" onClick="fetchPayloadById('{{payload_id}}')">View</button>
+                                                    <button class="btn btn-info btn-sm" onClick="downloadPayload('{{payload_id}}')">Download</button>
+                                                    <button class="btn btn-danger btn-sm" onClick="deletePayload('{{payload_id}}')">Delete</button>
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr></tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © CrabeC2 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+
+            <div class="modal fade" id="addPayloadModal" tabindex="-1" aria-labelledby="addPayloadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPayloadModalLabel">New Payload</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newPayloadForm" action="/add-payload" method="post" enctype="application/x-www-form-urlencoded">
+                            <div class="mb-3">
+                                <label for="payloadName" class="form-label">Payload Name</label>
+                                <input type="text" class="form-control" name="payload_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="payloadContent" class="form-label">Payload Content</label>
+                                <textarea class="form-control" name="payload_content" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="payloadContent" class="form-label">Payload Type</label>
+                                <textarea class="form-control" name="payload_type" rows="3" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add Payload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="modal fade" id="addPayloadFile" tabindex="-1" aria-labelledby="addPayloadFileLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPayloadFileLabel">New Payload</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newPayloadForm" action="/add-payload-file" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="payloadName" class="form-label">Payload Name</label>
+                                <input type="text" class="form-control" name="payload_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="payload_file">
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Add Payload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </div>
+        <div class="modal fade" id="viewPayloadModal" tabindex="-1" aria-labelledby="viewPayloadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewPayloadModalLabel">Payload Content</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="payloadNameDisplay" class="mb-2"></div>
+                        <div id="payloadTypeDisplay" class="mb-2"></div>
+                        <div id="payloadContentDisplay" class="mb-2"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="Deleted" tabindex="-1" aria-labelledby="DeletedLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DeletedLabel">Deleted</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick="window.location.reload();"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2" id="itemContentDisplay" rows="2" >Payload Succesfully deleted</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/script.min.js"></script>
+    <script type="text/javascript">
+        function fetchPayloadById(payloadId) {
+          fetch(`/api/payload/${payloadId}`)
+            .then(response => response.json())
+            .then(data => {
+                const payloadName = data.payload_name || 'No name provided';
+                const payloadType = data.payload_type || 'No type provided';
+                const payloadContent = data.payload_data || 'No content provided';
+        
+                document.getElementById('payloadNameDisplay').innerHTML = `<strong>Payload Name:</strong> <br>${payloadName}`;
+                document.getElementById('payloadTypeDisplay').innerHTML = `<strong>Payload Type:</strong> <br>${payloadType}`;
+                document.getElementById('payloadContentDisplay').innerHTML = `<strong>Payload Content:</strong> <br>${payloadContent.replace(/\n/g, '<br>')}`;
+        
+                new bootstrap.Modal(document.getElementById('viewPayloadModal')).show();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function deletePayload(payloadId) {
+            fetch(`/api/payload/delete/${payloadId}`)
+            .then(response => {
+                if (response.ok) {
+                    new bootstrap.Modal(document.getElementById('Deleted')).show();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function downloadPayload(payloadID) {
+            fetch(`/api/payload/${payloadID}`)
+            .then(response => response.json())
+            .then(data => {
+                const payloadName = data.payload_name || 'No_name_provided';
+                const payloadContent = data.payload_data || 'No_content_provided';
+        
+                var blob = new Blob([payloadContent], {type: "text/plain;charset=utf-8"});
+                var downloadLink = document.createElement("a");
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = payloadName.replace(/\s+/g, '_') + ".txt";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error downloading the payload.');
+            });
+        }
+
+
+    </script>
+</body>
+
+</html>

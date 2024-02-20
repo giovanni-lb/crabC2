@@ -1,0 +1,6 @@
+# Generated files
+/target/
+
+
+.DS_Store
+crabe.db

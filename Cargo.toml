@@ -1,0 +1,43 @@
+[package]
+name = "crabe_c2"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Axum is used for creating the HTTP server and routing
+axum = { version = "0.6.20", features = ["macros", "multipart"] }
+# MiniJinja is used for templating
+minijinja = "1.0.9"
+# Chrono is used for time features
+chrono = "0.4"
+# Rusqlite is used to interact with a sqlite db
+rusqlite = { version = "0.29.0", features = ["bundled"] }
+# Tokio is used to implement asynchronous functions
+tokio = { version = "1", features = ["full"] }
+# Serde and serde_json are used for JSON (de)serialization
+serde = "1.0.147"
+serde_json = "1.0.107"
+
+tower = "0.4"
+tower-http = { version = "0.1", features = ["fs"] }
+
+hyper = {version = "0.14.27", features = ["full"] }
+
+handlebars = "4"
+
+tide = "*"
+async-std = { version = "*", features = ["attributes"] }
+
+
+# Add random for number generation
+rand = "0.8"
+
+# For AES encryption
+aes = "0.8.3"
+hex="0.4.3"
+block-modes="0.8.1"
+hex-literal="0.3.3"
+
+[[bin]]
+name = "crabec2"
+path = "src/server/main.rs"

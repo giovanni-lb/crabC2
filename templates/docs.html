@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Documentation - CrabeC2</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.min.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-pastafarianism" style="font-size: 37px;"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>CrabeC2</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="init"><i class="fas fa-user"></i><span>1st Stage</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="machines"><i class="fas fa-user"></i><span>Infected Machines</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="payload"><i class="fas fa-table"></i><span>Payload</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="task-event"><i class="fas fa-window-maximize"></i><span>Task &amp; Event</span></a>
+                    <li class="nav-item"><a class="nav-link active" href="docs"><i class="fas fa-user-circle"></i><span>Documentation</span></a></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        </form>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="text-center mt-5">
+                        <h2>CrabeC2 Documentation</h2>
+                    </div>
+                    <div>
+
+                        <h4><strong>Payloads</strong></h4>
+                        <p>All payload could be found in the <a href="/payload">payload dashboard</a></p>
+                        <h5>View payload content</h5>
+                        <p>At any time you can see the content of a given payload (only if the payload contain ASCII characters), or you can directly download it from the dashboard</p>
+                        <div class="image-container" style="display: flex; justify-content: center;">
+                            <div style="max-width: 50%; margin-right: 10px; text-align: center;">
+                                <img src="docs-img/exemple-payload.png" alt="Payload dashboard" style="width: 100%; height: auto;">
+                                <p>Payload dashboard</p>
+                            </div>
+                            <div style="max-width: 30%; text-align: center;">
+                                <img src="docs-img/view-payload.png" alt="View payload content" style="width: 100%; height: auto;">
+                                <p>View payload content</p>
+                            </div>
+
+                        </div>
+                        <h5>How to add a payload</h5>
+                        <p>You can add payload to CrabeC2 either by text or using file upload, all payloads will be save under /vacances/photos and could be download remotly in order to upload thoses payload to an infected machine</p>
+                        <div class="image-container" style="display: flex; justify-content: center;">
+                            <div style="max-width: 30%; text-align: center;">
+                                <img src="docs-img/add-payload-text.png" alt="Add file via text" style="width: 100%; height: auto;">
+                                <p>Add file via text</p>
+                            </div>
+                            <div style="max-width: 30%; margin-right: 10px; text-align: center;">
+                                <img src="docs-img/add-payload-file.png" alt="Add payload via file upload" style="width: 100%; height: auto;">
+                                <p>Add payload via file upload</p>
+                            </div>
+                        </div>
+                        <h5>1st stage generator</h5>
+                        <p>You can generate a dropper for windows/linux and include any payload present on CrabeC2 : <a href="/init">generate your 1st stage</a></p>
+                        <div class="image-container" style="display: flex; justify-content: center;">
+                            <div style="max-width: 70%; text-align: center;">
+                                <img src="docs-img/1st-stage.png" alt="1st-stage" style="width: 100%; height: auto;">
+                                <p>1st stage generator</p>
+                            </div>
+                        </div>
+                        <p><strong>In order to run you crabec2.ps1, you can use the trick : "powershell.exe -ExecutionPolicy Bypass -File ./crabec2.ps1" </strong></p>
+                    </div>
+
+                    <div>
+
+                        <h4><strong>Infected Machine</strong></h4>
+                        <p>All infected machines could be found in the <a href="/machines">machine dashboard</a></p>
+                        <h5>View machine information</h5>
+                        <p>When a new machine is infected, our C2 retrieve automaticly some information about the system (user, mac address, IP, hostname), you can see all thoses information by clicking the view button.</p>
+                        <div class="image-container" style="display: flex; justify-content: center;">
+                            <div style="max-width: 50%; margin-right: 10px; text-align: center;">
+                                <img src="docs-img/exemple-machines.png" alt="Machine dashboard" style="width: 100%; height: auto;">
+                                <p>Machine dashboard</p>
+                            </div>
+                            <div style="max-width: 30%; text-align: center;">
+                                <img src="docs-img/view-machine.png" alt="View machine content" style="width: 100%; height: auto;">
+                                <p>View machine content</p>
+                            </div>
+
+                        </div>
+                        <h5>How to add an infected machine</h5>
+                        <p>All machines infected using the 1st stage generator (<a href="/init">generate your 1st stage</a>) will be register as a new infected machine. You can manually add one using the /get-info endpoint , but it's not the right way to do it</p>
+
+                        
+                    </div>
+                    <div>
+
+                        <h4><strong>Events</strong></h4>
+                        <p>Some events are logged for this C2, you can find all logs in the <a href="/machines">event dashboard</a>, to get more information you can download the whole log file using the link at the bottom of the events list</p>
+                        <div class="image-container" style="display: flex; justify-content: center;">
+                            <div style="max-width: 50%; margin-right: 10px; text-align: center;">
+                                <img src="docs-img/logs.png" alt="Events dashboard" style="width: 100%; height: auto;">
+                                <p>Events dashboard</p>
+                            </div>
+
+                        </div> 
+                        <h5>Event list</h5>
+                        <p><strong>ID : 01</strong>, New infected PC detected.<br>
+<strong>ID : 02</strong>, Connection opened from an infected PC.<br>
+<strong>ID : 03</strong>, Connection closed from an infected PC.<br>
+<strong>ID : 04</strong>, User connected.<br>
+<strong>ID : 05</strong>, User disconnected.<br>
+<strong>ID : 06</strong>, Stage 1 (Dropper) requested.<br>
+<strong>ID : 07</strong>, Stage 2 (Payload) requested.<br>
+<strong>ID : 08</strong>, Payload succeffuly installed.<br>
+<strong>ID : 09</strong>, Scheduled task started.<br>
+<strong>ID : 10</strong>, Scheduled task ended.<br>
+<strong>ID : 11</strong>, External discovery attempt of the C2.<br>
+<strong>ID : 12</strong>, Command success.<br>
+<strong>ID : 13</strong>, Command fail.<br>
+<strong>ID : 14</strong>, Exfiltration succes.<br>
+<strong>ID : 15</strong>, Exfiltration fail.<br>
+<strong>ID : 16</strong>, Unauthorize connection attempt.<br>
+<strong>ID : 17</strong>, C2 config changed.<br>
+<strong>ID : 18</strong>, Unautorized action from user.<br>
+<strong>ID : 19</strong>, C2 started.<br>
+<strong>ID : 20</strong>, C2 stopped.<br>
+<strong>ID : 21</strong>, Payload deleted<br></p>                       
+                    </div>
+
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © CrabeC2 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/script.min.js"></script>
+</body>
+
+</html>
